@@ -6,6 +6,8 @@ import { ZodError } from "zod";
 import type { Metrics } from "./metrics.js";
 import { createAccessRoutes } from "./modules/access/routes.js";
 import { type AccessService, DomainError } from "./modules/access/service.js";
+import { createDocumentRoutes } from "./modules/documents/routes.js";
+import type { DocumentService } from "./modules/documents/service.js";
 
 export const createApp = (
   options: {
@@ -13,6 +15,7 @@ export const createApp = (
     operatorToken?: string;
     access?: AccessService;
     bootstrapKey?: string;
+    documents?: DocumentService;
   } = {},
 ) => {
   const app = new Hono();
@@ -74,5 +77,7 @@ export const createApp = (
     });
   if (options.access && options.bootstrapKey)
     app.route("/v1", createAccessRoutes(options.access, options.bootstrapKey));
+  if (options.access && options.documents)
+    app.route("/v1", createDocumentRoutes(options.documents, options.access));
   return app;
 };

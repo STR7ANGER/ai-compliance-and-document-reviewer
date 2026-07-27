@@ -10,9 +10,9 @@ Complete tasks in order unless a dependency is explicitly removed. Each day has 
 - [x] 4. Design auth, organizations, matters, RBAC, retention, and audit logs; write acceptance criteria, contracts, risks, and the smallest vertical slice.
 - [x] 5. Implement auth, organizations, matters, RBAC, retention, and audit logs; keep frontend, API, domain logic, workers, and persistence in their declared boundaries.
 - [x] 6. Verify auth, organizations, matters, RBAC, retention, and audit logs with tests, failure cases, telemetry, documentation, and a reviewable demo.
-- [ ] 7. Design upload, malware boundary, parsing/OCR pipeline, and document viewer; write acceptance criteria, contracts, risks, and the smallest vertical slice.
-- [ ] 8. Implement upload, malware boundary, parsing/OCR pipeline, and document viewer; keep frontend, API, domain logic, workers, and persistence in their declared boundaries.
-- [ ] 9. Verify upload, malware boundary, parsing/OCR pipeline, and document viewer with tests, failure cases, telemetry, documentation, and a reviewable demo.
+- [x] 7. Design upload, malware boundary, parsing/OCR pipeline, and document viewer; write acceptance criteria, contracts, risks, and the smallest vertical slice.
+- [x] 8. Implement upload, malware boundary, parsing/OCR pipeline, and document viewer; keep frontend, API, domain logic, workers, and persistence in their declared boundaries.
+- [x] 9. Verify upload, malware boundary, parsing/OCR pipeline, and document viewer with tests, failure cases, telemetry, documentation, and a reviewable demo.
 - [ ] 10. Design chunking, embeddings, pgvector search, citations, and retrieval evaluation; write acceptance criteria, contracts, risks, and the smallest vertical slice.
 
 ## Day 2 — Core workflows and integrations (Tasks 11–20)
