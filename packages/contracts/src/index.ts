@@ -45,4 +45,21 @@ export const finalizeUploadInput = z.object({
   objectKey: z.string().min(10).max(500),
 });
 
+export const retrievalQueryInput = z.object({
+  matterId: z.string().cuid(),
+  query: z.string().trim().min(3).max(2000),
+  documentIds: z.array(z.string().cuid()).max(50).optional(),
+  limit: z.number().int().min(1).max(20).default(8),
+});
+
+export const citation = z.object({
+  documentId: z.string().cuid(),
+  documentVersionId: z.string().cuid(),
+  chunkId: z.string().cuid(),
+  pageStart: z.number().int().min(1),
+  pageEnd: z.number().int().min(1),
+  quote: z.string().min(1).max(1200),
+  score: z.number().min(0).max(1),
+});
+
 export type DataClassification = z.infer<typeof dataClassification>;

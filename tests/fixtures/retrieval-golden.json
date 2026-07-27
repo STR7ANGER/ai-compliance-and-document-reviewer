@@ -1,0 +1,24 @@
+[
+  {
+    "id": "breach-notice",
+    "query": "When must the processor report a personal data breach?",
+    "relevant": [
+      {
+        "document": "dpa-v1",
+        "page": 7,
+        "quote": "without undue delay and in any event within 24 hours"
+      }
+    ]
+  },
+  {
+    "id": "audit-right",
+    "query": "May the customer inspect security controls?",
+    "relevant": [
+      {
+        "document": "msa-v2",
+        "page": 12,
+        "quote": "may audit the controls once per calendar year"
+      }
+    ]
+  }
+]
