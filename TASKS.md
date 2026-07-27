@@ -7,9 +7,9 @@ Complete tasks in order unless a dependency is explicitly removed. Each day has 
 - [x] 1. Design workspace, storage, databases, Docker, CI, and data-classification policy; write acceptance criteria, contracts, risks, and the smallest vertical slice.
 - [x] 2. Implement workspace, storage, databases, Docker, CI, and data-classification policy; keep frontend, API, domain logic, workers, and persistence in their declared boundaries.
 - [x] 3. Verify workspace, storage, databases, Docker, CI, and data-classification policy with tests, failure cases, telemetry, documentation, and a reviewable demo.
-- [ ] 4. Design auth, organizations, matters, RBAC, retention, and audit logs; write acceptance criteria, contracts, risks, and the smallest vertical slice.
-- [ ] 5. Implement auth, organizations, matters, RBAC, retention, and audit logs; keep frontend, API, domain logic, workers, and persistence in their declared boundaries.
-- [ ] 6. Verify auth, organizations, matters, RBAC, retention, and audit logs with tests, failure cases, telemetry, documentation, and a reviewable demo.
+- [x] 4. Design auth, organizations, matters, RBAC, retention, and audit logs; write acceptance criteria, contracts, risks, and the smallest vertical slice.
+- [x] 5. Implement auth, organizations, matters, RBAC, retention, and audit logs; keep frontend, API, domain logic, workers, and persistence in their declared boundaries.
+- [x] 6. Verify auth, organizations, matters, RBAC, retention, and audit logs with tests, failure cases, telemetry, documentation, and a reviewable demo.
 - [ ] 7. Design upload, malware boundary, parsing/OCR pipeline, and document viewer; write acceptance criteria, contracts, risks, and the smallest vertical slice.
 - [ ] 8. Implement upload, malware boundary, parsing/OCR pipeline, and document viewer; keep frontend, API, domain logic, workers, and persistence in their declared boundaries.
 - [ ] 9. Verify upload, malware boundary, parsing/OCR pipeline, and document viewer with tests, failure cases, telemetry, documentation, and a reviewable demo.
