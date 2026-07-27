@@ -1,0 +1,31 @@
+{
+  "name": "ai-compliance-document-reviewer",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace @review/web",
+    "dev:api": "npm run dev --workspace @review/api",
+    "build": "npm run build --workspaces --if-present",
+    "lint": "biome check .",
+    "pretypecheck": "npm run build --workspace @review/contracts",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "pretest": "npm run build --workspace @review/contracts",
+    "test": "npm run test --workspaces --if-present",
+    "processor:test": "cd services/processor && go test ./...",
+    "check": "npm run lint && npm run typecheck && npm test && npm run processor:test",
+    "db:generate": "prisma generate",
+    "db:migrate": "prisma migrate dev"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.4",
+    "@types/node": "24.10.0",
+    "prisma": "6.19.3",
+    "tsx": "4.20.6",
+    "typescript": "5.9.3"
+  }
+}

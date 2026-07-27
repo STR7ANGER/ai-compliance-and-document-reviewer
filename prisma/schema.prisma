@@ -1,0 +1,190 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  OWNER
+  ADMIN
+  REVIEWER
+  VIEWER
+}
+
+enum DataClassification {
+  PUBLIC
+  INTERNAL
+  CONFIDENTIAL
+  RESTRICTED
+}
+
+enum DocumentStatus {
+  QUARANTINED
+  SCANNING
+  INFECTED
+  PROCESSING
+  READY
+  FAILED
+  DELETED
+}
+
+enum JobStatus {
+  QUEUED
+  RUNNING
+  SUCCEEDED
+  FAILED
+  DEAD_LETTER
+}
+
+model Organization {
+  id          String       @id @default(cuid())
+  name        String
+  slug        String       @unique
+  memberships Membership[]
+  apiKeys     ApiKey[]
+  matters     Matter[]
+  auditEvents AuditEvent[]
+  documents   Document[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model User {
+  id          String       @id @default(cuid())
+  email       String       @unique
+  memberships Membership[]
+  apiKeys     ApiKey[]
+  auditEvents AuditEvent[]
+  createdAt   DateTime     @default(now())
+}
+
+model Membership {
+  id             String       @id @default(cuid())
+  organizationId String
+  userId         String
+  role           Role
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt      DateTime     @default(now())
+
+  @@unique([organizationId, userId])
+  @@index([userId, organizationId])
+}
+
+model ApiKey {
+  id             String       @id @default(cuid())
+  organizationId String
+  userId         String
+  prefix         String       @unique
+  tokenHash      String       @unique
+  revokedAt      DateTime?
+  expiresAt      DateTime?
+  lastUsedAt     DateTime?
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt      DateTime     @default(now())
+
+  @@index([organizationId, revokedAt])
+}
+
+model Matter {
+  id             String             @id @default(cuid())
+  organizationId String
+  name           String
+  classification DataClassification @default(CONFIDENTIAL)
+  retentionDays  Int                @default(365)
+  legalHold      Boolean            @default(false)
+  organization   Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  documents      Document[]
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+
+  @@unique([organizationId, name])
+  @@index([organizationId, createdAt])
+}
+
+model Document {
+  id             String             @id @default(cuid())
+  organizationId String
+  matterId       String
+  filename       String
+  classification DataClassification
+  status         DocumentStatus     @default(QUARANTINED)
+  retentionUntil DateTime
+  deletedAt      DateTime?
+  organization   Organization       @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  matter         Matter             @relation(fields: [matterId], references: [id], onDelete: Cascade)
+  versions       DocumentVersion[]
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+
+  @@index([organizationId, matterId, status])
+}
+
+model DocumentVersion {
+  id         String          @id @default(cuid())
+  documentId String
+  version    Int
+  mediaType  String
+  sizeBytes  Int
+  sha256     String
+  objectKey  String          @unique
+  pageCount  Int?
+  document   Document        @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  jobs       ProcessingJob[]
+  createdAt  DateTime        @default(now())
+
+  @@unique([documentId, version])
+  @@index([sha256])
+}
+
+model UploadReservation {
+  id             String             @id @default(uuid())
+  organizationId String
+  matterId       String
+  filename       String
+  mediaType      String
+  sizeBytes      Int
+  sha256         String
+  classification DataClassification
+  objectKey      String             @unique
+  expiresAt      DateTime
+  consumedAt     DateTime?
+  createdAt      DateTime           @default(now())
+
+  @@index([organizationId, expiresAt])
+}
+
+model ProcessingJob {
+  id                String          @id @default(cuid())
+  documentVersionId String
+  status            JobStatus       @default(QUEUED)
+  attempts          Int             @default(0)
+  availableAt       DateTime        @default(now())
+  leaseOwner        String?
+  leaseUntil        DateTime?
+  errorCode         String?
+  documentVersion   DocumentVersion @relation(fields: [documentVersionId], references: [id], onDelete: Cascade)
+  createdAt         DateTime        @default(now())
+  updatedAt         DateTime        @updatedAt
+
+  @@index([status, availableAt])
+}
+
+model AuditEvent {
+  id             String       @id @default(cuid())
+  organizationId String
+  actorId        String?
+  action         String
+  target         String
+  targetId       String
+  metadata       Json
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  actor          User?        @relation(fields: [actorId], references: [id], onDelete: SetNull)
+  createdAt      DateTime     @default(now())
+
+  @@index([organizationId, createdAt])
+}
