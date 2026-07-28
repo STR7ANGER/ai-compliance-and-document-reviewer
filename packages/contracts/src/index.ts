@@ -75,4 +75,69 @@ export const retrievalIndexInput = z.object({
     .max(1000),
 });
 
+export const extractionInput = z.object({
+  documentVersionId: z.string().cuid(),
+  promptKey: z.string().trim().min(2).max(80),
+  query: z.string().trim().min(3).max(1000),
+});
+export const extractedObligations = z.object({
+  obligations: z
+    .array(
+      z.object({
+        statement: z.string().min(1).max(1000),
+        party: z.string().max(200),
+        deadline: z.string().max(200).nullable(),
+        evidenceIndex: z.number().int().min(0),
+        confidence: z.number().min(0).max(1),
+      }),
+    )
+    .max(100),
+});
+export const frameworkInput = z.object({
+  name: z.string().trim().min(2).max(120),
+  version: z.string().trim().min(1).max(30),
+  controls: z
+    .array(
+      z.object({
+        code: z.string().trim().min(1).max(50),
+        title: z.string().trim().min(2).max(200),
+        description: z.string().max(2000),
+        weight: z.number().positive().max(10).default(1),
+      }),
+    )
+    .min(1)
+    .max(500),
+});
+export const findingAssessmentInput = z.object({
+  matterId: z.string().cuid(),
+  documentVersionId: z.string().cuid(),
+  frameworkId: z.string().cuid(),
+  findings: z
+    .array(
+      z.object({
+        controlCode: z.string(),
+        title: z.string().min(1).max(200),
+        summary: z.string().min(1).max(2000),
+        severity: z.enum(["LOW", "MEDIUM", "HIGH", "CRITICAL"]),
+        confidence: z.number().min(0).max(1),
+        citation,
+      }),
+    )
+    .max(500),
+});
+export const suggestionInput = z.object({
+  findingId: z.string().cuid(),
+  proposedText: z.string().trim().min(1).max(10000),
+  rationale: z.string().trim().min(1).max(2000),
+  assigneeId: z.string().cuid().optional(),
+});
+export const reviewUpdateInput = z.object({
+  expectedRevision: z.number().int().min(0),
+  status: z.enum(["DRAFT", "IN_REVIEW", "APPROVED", "REJECTED"]),
+  assigneeId: z.string().cuid().nullable().optional(),
+});
+export const commentInput = z.object({
+  body: z.string().trim().min(1).max(2000),
+});
+
 export type DataClassification = z.infer<typeof dataClassification>;

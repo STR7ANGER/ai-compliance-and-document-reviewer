@@ -39,17 +39,41 @@ enum JobStatus {
   DEAD_LETTER
 }
 
+enum FindingSeverity {
+  LOW
+  MEDIUM
+  HIGH
+  CRITICAL
+}
+
+enum FindingStatus {
+  OPEN
+  IN_REVIEW
+  RESOLVED
+  ACCEPTED_RISK
+}
+
+enum ReviewStatus {
+  DRAFT
+  IN_REVIEW
+  APPROVED
+  REJECTED
+}
+
 model Organization {
-  id          String       @id @default(cuid())
-  name        String
-  slug        String       @unique
-  memberships Membership[]
-  apiKeys     ApiKey[]
-  matters     Matter[]
-  auditEvents AuditEvent[]
-  documents   Document[]
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  id             String          @id @default(cuid())
+  name           String
+  slug           String          @unique
+  memberships    Membership[]
+  apiKeys        ApiKey[]
+  matters        Matter[]
+  auditEvents    AuditEvent[]
+  documents      Document[]
+  frameworks     Framework[]
+  findings       Finding[]
+  promptVersions PromptVersion[]
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
 }
 
 model User {
@@ -125,21 +149,136 @@ model Document {
 }
 
 model DocumentVersion {
-  id         String          @id @default(cuid())
-  documentId String
-  version    Int
-  mediaType  String
-  sizeBytes  Int
-  sha256     String
-  objectKey  String          @unique
-  pageCount  Int?
-  document   Document        @relation(fields: [documentId], references: [id], onDelete: Cascade)
-  jobs       ProcessingJob[]
-  chunks     Chunk[]
-  createdAt  DateTime        @default(now())
+  id             String          @id @default(cuid())
+  documentId     String
+  version        Int
+  mediaType      String
+  sizeBytes      Int
+  sha256         String
+  objectKey      String          @unique
+  pageCount      Int?
+  document       Document        @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  jobs           ProcessingJob[]
+  chunks         Chunk[]
+  extractionRuns ExtractionRun[]
+  findings       Finding[]
+  createdAt      DateTime        @default(now())
 
   @@unique([documentId, version])
   @@index([sha256])
+}
+
+model PromptVersion {
+  id             String          @id @default(cuid())
+  organizationId String
+  key            String
+  version        Int
+  template       String
+  outputSchema   Json
+  active         Boolean         @default(true)
+  checksum       String
+  organization   Organization    @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  runs           ExtractionRun[]
+  createdAt      DateTime        @default(now())
+
+  @@unique([organizationId, key, version])
+  @@index([organizationId, key, active])
+}
+
+model ExtractionRun {
+  id                String          @id @default(cuid())
+  organizationId    String
+  documentVersionId String
+  promptVersionId   String
+  model             String
+  output            Json
+  groundingScore    Float
+  documentVersion   DocumentVersion @relation(fields: [documentVersionId], references: [id], onDelete: Cascade)
+  promptVersion     PromptVersion   @relation(fields: [promptVersionId], references: [id])
+  createdAt         DateTime        @default(now())
+
+  @@index([organizationId, documentVersionId, createdAt])
+}
+
+model Framework {
+  id             String       @id @default(cuid())
+  organizationId String
+  name           String
+  version        String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  controls       Control[]
+  createdAt      DateTime     @default(now())
+
+  @@unique([organizationId, name, version])
+}
+
+model Control {
+  id          String    @id @default(cuid())
+  frameworkId String
+  code        String
+  title       String
+  description String
+  weight      Float     @default(1)
+  framework   Framework @relation(fields: [frameworkId], references: [id], onDelete: Cascade)
+  findings    Finding[]
+
+  @@unique([frameworkId, code])
+}
+
+model Finding {
+  id                String               @id @default(cuid())
+  organizationId    String
+  matterId          String
+  documentVersionId String
+  controlId         String
+  title             String
+  summary           String
+  severity          FindingSeverity
+  confidence        Float
+  riskScore         Float
+  status            FindingStatus        @default(OPEN)
+  citation          Json
+  organization      Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  documentVersion   DocumentVersion      @relation(fields: [documentVersionId], references: [id], onDelete: Cascade)
+  control           Control              @relation(fields: [controlId], references: [id], onDelete: Cascade)
+  suggestions       RevisionSuggestion[]
+  createdAt         DateTime             @default(now())
+  updatedAt         DateTime             @updatedAt
+
+  @@index([organizationId, matterId, status])
+}
+
+model RevisionSuggestion {
+  id           String   @id @default(cuid())
+  findingId    String
+  proposedText String
+  rationale    String
+  finding      Finding  @relation(fields: [findingId], references: [id], onDelete: Cascade)
+  review       Review?
+  createdAt    DateTime @default(now())
+}
+
+model Review {
+  id           String             @id @default(cuid())
+  suggestionId String             @unique
+  assigneeId   String?
+  status       ReviewStatus       @default(DRAFT)
+  revision     Int                @default(0)
+  suggestion   RevisionSuggestion @relation(fields: [suggestionId], references: [id], onDelete: Cascade)
+  comments     ReviewComment[]
+  createdAt    DateTime           @default(now())
+  updatedAt    DateTime           @updatedAt
+}
+
+model ReviewComment {
+  id        String   @id @default(cuid())
+  reviewId  String
+  authorId  String
+  body      String
+  review    Review   @relation(fields: [reviewId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@index([reviewId, createdAt])
 }
 
 model Chunk {
