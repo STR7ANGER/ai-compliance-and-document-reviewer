@@ -62,4 +62,17 @@ export const citation = z.object({
   score: z.number().min(0).max(1),
 });
 
+export const retrievalIndexInput = z.object({
+  documentVersionId: z.string().cuid(),
+  pages: z
+    .array(
+      z.object({
+        page: z.number().int().min(1),
+        text: z.string().max(100_000),
+      }),
+    )
+    .min(1)
+    .max(1000),
+});
+
 export type DataClassification = z.infer<typeof dataClassification>;

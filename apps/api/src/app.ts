@@ -8,6 +8,8 @@ import { createAccessRoutes } from "./modules/access/routes.js";
 import { type AccessService, DomainError } from "./modules/access/service.js";
 import { createDocumentRoutes } from "./modules/documents/routes.js";
 import type { DocumentService } from "./modules/documents/service.js";
+import { createRetrievalRoutes } from "./modules/retrieval/routes.js";
+import type { RetrievalService } from "./modules/retrieval/service.js";
 
 export const createApp = (
   options: {
@@ -16,6 +18,7 @@ export const createApp = (
     access?: AccessService;
     bootstrapKey?: string;
     documents?: DocumentService;
+    retrieval?: RetrievalService;
   } = {},
 ) => {
   const app = new Hono();
@@ -79,5 +82,7 @@ export const createApp = (
     app.route("/v1", createAccessRoutes(options.access, options.bootstrapKey));
   if (options.access && options.documents)
     app.route("/v1", createDocumentRoutes(options.documents, options.access));
+  if (options.access && options.retrieval)
+    app.route("/v1", createRetrievalRoutes(options.retrieval, options.access));
   return app;
 };

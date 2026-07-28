@@ -17,8 +17,8 @@ Complete tasks in order unless a dependency is explicitly removed. Each day has 
 
 ## Day 2 — Core workflows and integrations (Tasks 11–20)
 
-- [ ] 11. Implement chunking, embeddings, pgvector search, citations, and retrieval evaluation; keep frontend, API, domain logic, workers, and persistence in their declared boundaries.
-- [ ] 12. Verify chunking, embeddings, pgvector search, citations, and retrieval evaluation with tests, failure cases, telemetry, documentation, and a reviewable demo.
+- [x] 11. Implement chunking, embeddings, pgvector search, citations, and retrieval evaluation; keep frontend, API, domain logic, workers, and persistence in their declared boundaries.
+- [x] 12. Verify chunking, embeddings, pgvector search, citations, and retrieval evaluation with tests, failure cases, telemetry, documentation, and a reviewable demo.
 - [ ] 13. Design Gemini structured extraction, grounding constraints, and prompt/version registry; write acceptance criteria, contracts, risks, and the smallest vertical slice.
 - [ ] 14. Implement Gemini structured extraction, grounding constraints, and prompt/version registry; keep frontend, API, domain logic, workers, and persistence in their declared boundaries.
 - [ ] 15. Verify Gemini structured extraction, grounding constraints, and prompt/version registry with tests, failure cases, telemetry, documentation, and a reviewable demo.

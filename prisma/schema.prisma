@@ -135,10 +135,32 @@ model DocumentVersion {
   pageCount  Int?
   document   Document        @relation(fields: [documentId], references: [id], onDelete: Cascade)
   jobs       ProcessingJob[]
+  chunks     Chunk[]
   createdAt  DateTime        @default(now())
 
   @@unique([documentId, version])
   @@index([sha256])
+}
+
+model Chunk {
+  id                String                     @id @default(cuid())
+  organizationId    String
+  matterId          String
+  documentId        String
+  documentVersionId String
+  ordinal           Int
+  pageStart         Int
+  pageEnd           Int
+  text              String
+  textChecksum      String
+  embeddingModel    String
+  embedding         Unsupported("vector(768)")
+  documentVersion   DocumentVersion            @relation(fields: [documentVersionId], references: [id], onDelete: Cascade)
+  createdAt         DateTime                   @default(now())
+
+  @@unique([documentVersionId, ordinal])
+  @@index([organizationId, matterId, documentId])
+  @@index([textChecksum, embeddingModel])
 }
 
 model UploadReservation {

@@ -7,6 +7,9 @@ import { AccessService } from "./modules/access/service.js";
 import { PrismaDocumentRepository } from "./modules/documents/prisma-repository.js";
 import { DocumentService } from "./modules/documents/service.js";
 import { S3ObjectStorage } from "./modules/documents/storage.js";
+import { HashEmbedder } from "./modules/retrieval/chunker.js";
+import { PrismaRetrievalRepository } from "./modules/retrieval/prisma-repository.js";
+import { RetrievalService } from "./modules/retrieval/service.js";
 
 const environment = parseEnvironment(process.env);
 const metrics = new Metrics();
@@ -26,6 +29,11 @@ const documents = new DocumentService(
   storage,
   metrics,
 );
+const retrieval = new RetrievalService(
+  new PrismaRetrievalRepository(),
+  new HashEmbedder(),
+  metrics,
+);
 const server = serve({
   fetch: createApp({
     metrics,
@@ -33,6 +41,7 @@ const server = serve({
     access,
     bootstrapKey: environment.BOOTSTRAP_ADMIN_KEY,
     documents,
+    retrieval,
   }).fetch,
   port: environment.PORT,
 });
