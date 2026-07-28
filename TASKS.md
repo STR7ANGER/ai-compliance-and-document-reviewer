@@ -19,14 +19,14 @@ Complete tasks in order unless a dependency is explicitly removed. Each day has 
 
 - [x] 11. Implement chunking, embeddings, pgvector search, citations, and retrieval evaluation; keep frontend, API, domain logic, workers, and persistence in their declared boundaries.
 - [x] 12. Verify chunking, embeddings, pgvector search, citations, and retrieval evaluation with tests, failure cases, telemetry, documentation, and a reviewable demo.
-- [ ] 13. Design Gemini structured extraction, grounding constraints, and prompt/version registry; write acceptance criteria, contracts, risks, and the smallest vertical slice.
-- [ ] 14. Implement Gemini structured extraction, grounding constraints, and prompt/version registry; keep frontend, API, domain logic, workers, and persistence in their declared boundaries.
-- [ ] 15. Verify Gemini structured extraction, grounding constraints, and prompt/version registry with tests, failure cases, telemetry, documentation, and a reviewable demo.
-- [ ] 16. Design framework/control library, mappings, scoring, and findings dashboard; write acceptance criteria, contracts, risks, and the smallest vertical slice.
-- [ ] 17. Implement framework/control library, mappings, scoring, and findings dashboard; keep frontend, API, domain logic, workers, and persistence in their declared boundaries.
-- [ ] 18. Verify framework/control library, mappings, scoring, and findings dashboard with tests, failure cases, telemetry, documentation, and a reviewable demo.
-- [ ] 19. Design revision suggestions, human review, comments, assignment, and statuses; write acceptance criteria, contracts, risks, and the smallest vertical slice.
-- [ ] 20. Implement revision suggestions, human review, comments, assignment, and statuses; keep frontend, API, domain logic, workers, and persistence in their declared boundaries.
+- [x] 13. Design Gemini structured extraction, grounding constraints, and prompt/version registry; write acceptance criteria, contracts, risks, and the smallest vertical slice.
+- [x] 14. Implement Gemini structured extraction, grounding constraints, and prompt/version registry; keep frontend, API, domain logic, workers, and persistence in their declared boundaries.
+- [x] 15. Verify Gemini structured extraction, grounding constraints, and prompt/version registry with tests, failure cases, telemetry, documentation, and a reviewable demo.
+- [x] 16. Design framework/control library, mappings, scoring, and findings dashboard; write acceptance criteria, contracts, risks, and the smallest vertical slice.
+- [x] 17. Implement framework/control library, mappings, scoring, and findings dashboard; keep frontend, API, domain logic, workers, and persistence in their declared boundaries.
+- [x] 18. Verify framework/control library, mappings, scoring, and findings dashboard with tests, failure cases, telemetry, documentation, and a reviewable demo.
+- [x] 19. Design revision suggestions, human review, comments, assignment, and statuses; write acceptance criteria, contracts, risks, and the smallest vertical slice.
+- [x] 20. Implement revision suggestions, human review, comments, assignment, and statuses; keep frontend, API, domain logic, workers, and persistence in their declared boundaries.
 
 ## Day 3 — Advanced behavior and production hardening (Tasks 21–30)
 

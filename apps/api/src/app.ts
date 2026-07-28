@@ -6,10 +6,16 @@ import { ZodError } from "zod";
 import type { Metrics } from "./metrics.js";
 import { createAccessRoutes } from "./modules/access/routes.js";
 import { type AccessService, DomainError } from "./modules/access/service.js";
+import { createComplianceRoutes } from "./modules/compliance/routes.js";
+import type { ComplianceService } from "./modules/compliance/service.js";
 import { createDocumentRoutes } from "./modules/documents/routes.js";
 import type { DocumentService } from "./modules/documents/service.js";
+import { createExtractionRoutes } from "./modules/extraction/routes.js";
+import type { ExtractionService } from "./modules/extraction/service.js";
 import { createRetrievalRoutes } from "./modules/retrieval/routes.js";
 import type { RetrievalService } from "./modules/retrieval/service.js";
+import { createReviewRoutes } from "./modules/reviews/routes.js";
+import type { ReviewService } from "./modules/reviews/service.js";
 
 export const createApp = (
   options: {
@@ -19,6 +25,9 @@ export const createApp = (
     bootstrapKey?: string;
     documents?: DocumentService;
     retrieval?: RetrievalService;
+    extraction?: ExtractionService;
+    compliance?: ComplianceService;
+    reviews?: ReviewService;
   } = {},
 ) => {
   const app = new Hono();
@@ -84,5 +93,17 @@ export const createApp = (
     app.route("/v1", createDocumentRoutes(options.documents, options.access));
   if (options.access && options.retrieval)
     app.route("/v1", createRetrievalRoutes(options.retrieval, options.access));
+  if (options.access && options.extraction)
+    app.route(
+      "/v1",
+      createExtractionRoutes(options.extraction, options.access),
+    );
+  if (options.access && options.compliance)
+    app.route(
+      "/v1",
+      createComplianceRoutes(options.compliance, options.access),
+    );
+  if (options.access && options.reviews)
+    app.route("/v1", createReviewRoutes(options.reviews, options.access));
   return app;
 };
