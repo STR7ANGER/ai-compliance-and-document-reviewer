@@ -1,4 +1,5 @@
 import {
+  DeleteObjectCommand,
   GetObjectCommand,
   PutObjectCommand,
   S3Client,
@@ -13,6 +14,7 @@ export interface ObjectStorage {
     sha256: string;
   }): Promise<string>;
   downloadUrl(objectKey: string): Promise<string>;
+  deleteObject(objectKey: string): Promise<void>;
 }
 
 export class S3ObjectStorage implements ObjectStorage {
@@ -63,6 +65,11 @@ export class S3ObjectStorage implements ObjectStorage {
         ResponseContentDisposition: "inline",
       }),
       { expiresIn: 300 },
+    );
+  }
+  async deleteObject(objectKey: string) {
+    await this.client.send(
+      new DeleteObjectCommand({ Bucket: this.bucket, Key: objectKey }),
     );
   }
 }

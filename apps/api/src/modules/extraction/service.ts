@@ -8,7 +8,11 @@ import type { RetrievalService } from "../retrieval/service.js";
 
 export interface StructuredGenerator {
   model: string;
-  generate(prompt: string): Promise<unknown>;
+  generate(prompt: string): Promise<{
+    output: unknown;
+    inputTokens: number;
+    outputTokens: number;
+  }>;
 }
 export class GeminiGenerator implements StructuredGenerator {
   readonly model = "gemini-3.6-flash";
@@ -37,10 +41,18 @@ export class GeminiGenerator implements StructuredGenerator {
       );
     const body = (await response.json()) as {
       candidates?: Array<{ content?: { parts?: Array<{ text?: string }> } }>;
+      usageMetadata?: {
+        promptTokenCount?: number;
+        candidatesTokenCount?: number;
+      };
     };
-    return JSON.parse(
-      body.candidates?.[0]?.content?.parts?.[0]?.text ?? "null",
-    );
+    return {
+      output: JSON.parse(
+        body.candidates?.[0]?.content?.parts?.[0]?.text ?? "null",
+      ),
+      inputTokens: body.usageMetadata?.promptTokenCount ?? 0,
+      outputTokens: body.usageMetadata?.candidatesTokenCount ?? 0,
+    };
   }
 }
 
@@ -104,11 +116,10 @@ export class ExtractionService {
       index,
       ...hit.citation,
     }));
-    const parsed = extractedObligations.parse(
-      await this.generator.generate(
-        `${promptVersion.template}\nEvidence:\n${JSON.stringify(evidence)}`,
-      ),
+    const generation = await this.generator.generate(
+      `${promptVersion.template}\nEvidence:\n${JSON.stringify(evidence)}`,
     );
+    const parsed = extractedObligations.parse(generation.output);
     if (parsed.obligations.some((item) => !evidence[item.evidenceIndex]))
       throw new DomainError(
         "UNGROUNDED_OUTPUT",
@@ -134,6 +145,14 @@ export class ExtractionService {
     this.metrics.increment("extraction_runs_total", {
       model: this.generator.model,
     });
+    this.metrics.incrementBy("ai_input_tokens_total", generation.inputTokens, {
+      model: this.generator.model,
+    });
+    this.metrics.incrementBy(
+      "ai_output_tokens_total",
+      generation.outputTokens,
+      { model: this.generator.model },
+    );
     return { id: run.id, promptVersion: promptVersion.version, ...output };
   }
 }

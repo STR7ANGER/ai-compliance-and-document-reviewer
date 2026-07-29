@@ -37,6 +37,11 @@ export interface DocumentRepository {
   ): Promise<
     (Record<string, unknown> & { status: string; objectKey?: string }) | null
   >;
+  softDelete(input: {
+    organizationId: string;
+    actorId: string;
+    documentId: string;
+  }): Promise<{ objectKeys: string[] } | "NOT_FOUND" | "LEGAL_HOLD">;
 }
 
 const requireReviewer = (principal: Principal) => {
@@ -118,5 +123,27 @@ export class DocumentService {
       ...document,
       viewerUrl: await this.storage.downloadUrl(objectKey),
     };
+  }
+  async delete(principal: Principal, documentId: string) {
+    if (!["OWNER", "ADMIN"].includes(principal.role))
+      throw new DomainError(
+        "FORBIDDEN",
+        403,
+        "Deletion requires administrator.",
+      );
+    const result = await this.repository.softDelete({
+      organizationId: principal.organizationId,
+      actorId: principal.userId,
+      documentId,
+    });
+    if (result === "NOT_FOUND")
+      throw new DomainError("DOCUMENT_NOT_FOUND", 404, "Document not found.");
+    if (result === "LEGAL_HOLD")
+      throw new DomainError("LEGAL_HOLD", 409, "Document is under legal hold.");
+    await Promise.all(
+      result.objectKeys.map((key) => this.storage.deleteObject(key)),
+    );
+    this.metrics.increment("documents_deleted_total");
+    return { deleted: true, objectCount: result.objectKeys.length };
   }
 }

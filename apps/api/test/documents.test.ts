@@ -33,13 +33,20 @@ class Memory implements DocumentRepository {
       ...(this.ready ? { objectKey: "clean/document" } : {}),
     };
   }
+  async softDelete() {
+    return { objectKeys: ["clean/document"] };
+  }
 }
 class Storage implements ObjectStorage {
+  deleted: string[] = [];
   async uploadUrl() {
     return "https://objects.example/upload";
   }
   async downloadUrl() {
     return "https://objects.example/view";
+  }
+  async deleteObject(objectKey: string) {
+    this.deleted.push(objectKey);
   }
 }
 
@@ -90,5 +97,16 @@ describe("secure documents", () => {
     await expect(
       service.document({ ...reviewer, organizationId: "other" }, "document"),
     ).rejects.toMatchObject({ code: "DOCUMENT_NOT_FOUND" });
+  });
+  it("allows only administrators to delete stored objects", async () => {
+    const storage = new Storage();
+    const service = new DocumentService(new Memory(), storage, new Metrics());
+    await expect(service.delete(reviewer, "document")).rejects.toMatchObject({
+      code: "FORBIDDEN",
+    });
+    await expect(
+      service.delete({ ...reviewer, role: "ADMIN" }, "document"),
+    ).resolves.toEqual({ deleted: true, objectCount: 1 });
+    expect(storage.deleted).toEqual(["clean/document"]);
   });
 });

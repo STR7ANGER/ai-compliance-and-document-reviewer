@@ -150,5 +150,9 @@ export const findingResolutionInput = z.object({
   evidenceChunkIds: z.array(z.string().cuid()).min(1).max(50),
 });
 export const reportFormat = z.enum(["json", "csv"]);
+export const redactionInput = z.object({
+  text: z.string().min(1).max(100_000),
+  terms: z.array(z.string().trim().min(2).max(200)).max(100).default([]),
+});
 
 export type DataClassification = z.infer<typeof dataClassification>;

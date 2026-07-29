@@ -12,6 +12,11 @@ import { createDocumentRoutes } from "./modules/documents/routes.js";
 import type { DocumentService } from "./modules/documents/service.js";
 import { createExtractionRoutes } from "./modules/extraction/routes.js";
 import type { ExtractionService } from "./modules/extraction/service.js";
+import { createHardeningRoutes } from "./modules/hardening/routes.js";
+import type {
+  FixedWindowRateLimiter,
+  HardeningService,
+} from "./modules/hardening/service.js";
 import { createReportRoutes } from "./modules/reports/routes.js";
 import type { ReportService } from "./modules/reports/service.js";
 import { createRetrievalRoutes } from "./modules/retrieval/routes.js";
@@ -31,6 +36,8 @@ export const createApp = (
     compliance?: ComplianceService;
     reviews?: ReviewService;
     reports?: ReportService;
+    hardening?: HardeningService;
+    rateLimiter?: FixedWindowRateLimiter;
   } = {},
 ) => {
   const app = new Hono();
@@ -50,6 +57,18 @@ export const createApp = (
   });
   app.use("*", requestId());
   app.use("*", secureHeaders());
+  if (options.rateLimiter)
+    app.use("/v1/*", async (context, next) => {
+      const identity =
+        context.req.header("authorization") ??
+        context.req.header("x-forwarded-for") ??
+        "anonymous";
+      const result = options.rateLimiter?.take(identity);
+      context.header("x-ratelimit-remaining", String(result?.remaining ?? 0));
+      if (!result?.allowed)
+        return context.json({ error: { code: "RATE_LIMITED" } }, 429);
+      await next();
+    });
   app.use(
     "*",
     cors({ origin: process.env.WEB_URL ?? "http://localhost:3000" }),
@@ -110,5 +129,7 @@ export const createApp = (
     app.route("/v1", createReviewRoutes(options.reviews, options.access));
   if (options.access && options.reports)
     app.route("/v1", createReportRoutes(options.reports, options.access));
+  if (options.access && options.hardening)
+    app.route("/v1", createHardeningRoutes(options.hardening, options.access));
   return app;
 };

@@ -7,12 +7,14 @@ export function diffLines(before: string, after: string): DiffPart[] {
     new Array<number>(right.length + 1).fill(0),
   );
   for (let i = left.length - 1; i >= 0; i--)
-    for (let j = right.length - 1; j >= 0; j--)
-      if (table[i])
-        table[i][j] =
+    for (let j = right.length - 1; j >= 0; j--) {
+      const row = table[i];
+      if (row)
+        row[j] =
           left[i] === right[j]
             ? 1 + (table[i + 1]?.[j + 1] ?? 0)
             : Math.max(table[i + 1]?.[j] ?? 0, table[i]?.[j + 1] ?? 0);
+    }
   const parts: DiffPart[] = [];
   let i = 0;
   let j = 0;

@@ -131,4 +131,39 @@ export class PrismaDocumentRepository implements DocumentRepository {
         : {}),
     };
   }
+  async softDelete(input: Parameters<DocumentRepository["softDelete"]>[0]) {
+    return prisma.$transaction(async (tx) => {
+      const document = await tx.document.findFirst({
+        where: {
+          id: input.documentId,
+          organizationId: input.organizationId,
+          deletedAt: null,
+        },
+        include: {
+          matter: { select: { legalHold: true } },
+          versions: { select: { objectKey: true } },
+        },
+      });
+      if (!document) return "NOT_FOUND" as const;
+      if (document.matter.legalHold) return "LEGAL_HOLD" as const;
+      await tx.document.update({
+        where: { id: document.id },
+        data: { status: "DELETED", deletedAt: new Date() },
+      });
+      await tx.chunk.deleteMany({ where: { documentId: document.id } });
+      await tx.auditEvent.create({
+        data: {
+          organizationId: input.organizationId,
+          actorId: input.actorId,
+          action: "document.deleted",
+          target: "Document",
+          targetId: document.id,
+          metadata: { objectCount: document.versions.length },
+        },
+      });
+      return {
+        objectKeys: document.versions.map((version) => version.objectKey),
+      };
+    });
+  }
 }

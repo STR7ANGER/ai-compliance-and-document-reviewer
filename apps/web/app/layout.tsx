@@ -10,13 +10,17 @@ export default function Layout({
   return (
     <html lang="en">
       <body>
+        <a className="skip-link" href="#main-content">
+          Skip to content
+        </a>
         <header>
           <a href="/">Citewise</a>
           <nav>
             <a href="/review">Review workspace</a>
+            <a href="/findings">Findings</a>
           </nav>
         </header>
-        {children}
+        <div id="main-content">{children}</div>
       </body>
     </html>
   );

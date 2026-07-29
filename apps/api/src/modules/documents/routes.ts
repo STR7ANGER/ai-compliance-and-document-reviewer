@@ -33,5 +33,13 @@ export const createDocumentRoutes = (
       ),
     ),
   );
+  routes.delete("/documents/:id", async (context) =>
+    context.json(
+      await documents.delete(
+        await principal(context.req.header("authorization")),
+        context.req.param("id"),
+      ),
+    ),
+  );
   return routes;
 };

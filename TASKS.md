@@ -34,9 +34,9 @@ Complete tasks in order unless a dependency is explicitly removed. Each day has 
 - [x] 22. Design document diff, finding resolution, evidence links, and report export; write acceptance criteria, contracts, risks, and the smallest vertical slice.
 - [x] 23. Implement document diff, finding resolution, evidence links, and report export; keep frontend, API, domain logic, workers, and persistence in their declared boundaries.
 - [x] 24. Verify document diff, finding resolution, evidence links, and report export with tests, failure cases, telemetry, documentation, and a reviewable demo.
-- [ ] 25. Design redaction, deletion, rate limits, observability, cost metrics, and accessibility; write acceptance criteria, contracts, risks, and the smallest vertical slice.
-- [ ] 26. Implement redaction, deletion, rate limits, observability, cost metrics, and accessibility; keep frontend, API, domain logic, workers, and persistence in their declared boundaries.
-- [ ] 27. Verify redaction, deletion, rate limits, observability, cost metrics, and accessibility with tests, failure cases, telemetry, documentation, and a reviewable demo.
+- [x] 25. Design redaction, deletion, rate limits, observability, cost metrics, and accessibility; write acceptance criteria, contracts, risks, and the smallest vertical slice.
+- [x] 26. Implement redaction, deletion, rate limits, observability, cost metrics, and accessibility; keep frontend, API, domain logic, workers, and persistence in their declared boundaries.
+- [x] 27. Verify redaction, deletion, rate limits, observability, cost metrics, and accessibility with tests, failure cases, telemetry, documentation, and a reviewable demo.
 - [ ] 28. Design golden-dataset tests, hallucination review, E2E flow, and deployment docs; write acceptance criteria, contracts, risks, and the smallest vertical slice.
 - [ ] 29. Implement golden-dataset tests, hallucination review, E2E flow, and deployment docs; keep frontend, API, domain logic, workers, and persistence in their declared boundaries.
 - [ ] 30. Verify golden-dataset tests, hallucination review, E2E flow, and deployment docs with tests, failure cases, telemetry, documentation, and a reviewable demo.
