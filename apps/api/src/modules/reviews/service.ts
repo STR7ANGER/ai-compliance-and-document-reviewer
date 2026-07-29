@@ -7,12 +7,14 @@ import { prisma } from "../../db.js";
 import type { Principal } from "../access/service.js";
 import { DomainError } from "../access/service.js";
 
-const transitions = {
+export const transitions = {
   DRAFT: ["DRAFT", "IN_REVIEW"],
   IN_REVIEW: ["IN_REVIEW", "APPROVED", "REJECTED"],
   APPROVED: [],
   REJECTED: ["IN_REVIEW"],
 } as const;
+export const canTransition = (from: keyof typeof transitions, to: string) =>
+  (transitions[from] as readonly string[]).includes(to);
 export class ReviewService {
   async suggest(principal: Principal, untrusted: unknown) {
     if (principal.role === "VIEWER")
@@ -60,9 +62,7 @@ export class ReviewService {
     });
     if (!current)
       throw new DomainError("REVIEW_NOT_FOUND", 404, "Review not found.");
-    if (
-      !(transitions[current.status] as readonly string[]).includes(input.status)
-    )
+    if (!canTransition(current.status, input.status))
       throw new DomainError(
         "INVALID_TRANSITION",
         409,

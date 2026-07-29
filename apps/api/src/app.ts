@@ -12,6 +12,8 @@ import { createDocumentRoutes } from "./modules/documents/routes.js";
 import type { DocumentService } from "./modules/documents/service.js";
 import { createExtractionRoutes } from "./modules/extraction/routes.js";
 import type { ExtractionService } from "./modules/extraction/service.js";
+import { createReportRoutes } from "./modules/reports/routes.js";
+import type { ReportService } from "./modules/reports/service.js";
 import { createRetrievalRoutes } from "./modules/retrieval/routes.js";
 import type { RetrievalService } from "./modules/retrieval/service.js";
 import { createReviewRoutes } from "./modules/reviews/routes.js";
@@ -28,6 +30,7 @@ export const createApp = (
     extraction?: ExtractionService;
     compliance?: ComplianceService;
     reviews?: ReviewService;
+    reports?: ReportService;
   } = {},
 ) => {
   const app = new Hono();
@@ -105,5 +108,7 @@ export const createApp = (
     );
   if (options.access && options.reviews)
     app.route("/v1", createReviewRoutes(options.reviews, options.access));
+  if (options.access && options.reports)
+    app.route("/v1", createReportRoutes(options.reports, options.access));
   return app;
 };

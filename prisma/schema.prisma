@@ -237,15 +237,30 @@ model Finding {
   confidence        Float
   riskScore         Float
   status            FindingStatus        @default(OPEN)
+  resolutionNote    String?
+  resolvedBy        String?
+  resolvedAt        DateTime?
   citation          Json
   organization      Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
   documentVersion   DocumentVersion      @relation(fields: [documentVersionId], references: [id], onDelete: Cascade)
   control           Control              @relation(fields: [controlId], references: [id], onDelete: Cascade)
   suggestions       RevisionSuggestion[]
+  evidenceLinks     EvidenceLink[]
   createdAt         DateTime             @default(now())
   updatedAt         DateTime             @updatedAt
 
   @@index([organizationId, matterId, status])
+}
+
+model EvidenceLink {
+  id        String   @id @default(cuid())
+  findingId String
+  chunkId   String
+  label     String
+  finding   Finding  @relation(fields: [findingId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([findingId, chunkId])
 }
 
 model RevisionSuggestion {

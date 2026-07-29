@@ -30,10 +30,10 @@ Complete tasks in order unless a dependency is explicitly removed. Each day has 
 
 ## Day 3 — Advanced behavior and production hardening (Tasks 21–30)
 
-- [ ] 21. Verify revision suggestions, human review, comments, assignment, and statuses with tests, failure cases, telemetry, documentation, and a reviewable demo.
-- [ ] 22. Design document diff, finding resolution, evidence links, and report export; write acceptance criteria, contracts, risks, and the smallest vertical slice.
-- [ ] 23. Implement document diff, finding resolution, evidence links, and report export; keep frontend, API, domain logic, workers, and persistence in their declared boundaries.
-- [ ] 24. Verify document diff, finding resolution, evidence links, and report export with tests, failure cases, telemetry, documentation, and a reviewable demo.
+- [x] 21. Verify revision suggestions, human review, comments, assignment, and statuses with tests, failure cases, telemetry, documentation, and a reviewable demo.
+- [x] 22. Design document diff, finding resolution, evidence links, and report export; write acceptance criteria, contracts, risks, and the smallest vertical slice.
+- [x] 23. Implement document diff, finding resolution, evidence links, and report export; keep frontend, API, domain logic, workers, and persistence in their declared boundaries.
+- [x] 24. Verify document diff, finding resolution, evidence links, and report export with tests, failure cases, telemetry, documentation, and a reviewable demo.
 - [ ] 25. Design redaction, deletion, rate limits, observability, cost metrics, and accessibility; write acceptance criteria, contracts, risks, and the smallest vertical slice.
 - [ ] 26. Implement redaction, deletion, rate limits, observability, cost metrics, and accessibility; keep frontend, API, domain logic, workers, and persistence in their declared boundaries.
 - [ ] 27. Verify redaction, deletion, rate limits, observability, cost metrics, and accessibility with tests, failure cases, telemetry, documentation, and a reviewable demo.

@@ -140,4 +140,15 @@ export const commentInput = z.object({
   body: z.string().trim().min(1).max(2000),
 });
 
+export const documentDiffInput = z.object({
+  beforeVersionId: z.string().cuid(),
+  afterVersionId: z.string().cuid(),
+});
+export const findingResolutionInput = z.object({
+  status: z.enum(["RESOLVED", "ACCEPTED_RISK"]),
+  note: z.string().trim().min(3).max(2000),
+  evidenceChunkIds: z.array(z.string().cuid()).min(1).max(50),
+});
+export const reportFormat = z.enum(["json", "csv"]);
+
 export type DataClassification = z.infer<typeof dataClassification>;

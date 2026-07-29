@@ -12,6 +12,7 @@ import {
   ExtractionService,
   GeminiGenerator,
 } from "./modules/extraction/service.js";
+import { ReportService } from "./modules/reports/service.js";
 import { HashEmbedder } from "./modules/retrieval/chunker.js";
 import { PrismaRetrievalRepository } from "./modules/retrieval/prisma-repository.js";
 import { RetrievalService } from "./modules/retrieval/service.js";
@@ -49,6 +50,7 @@ const extraction = environment.GEMINI_API_KEY
   : undefined;
 const compliance = new ComplianceService(metrics);
 const reviews = new ReviewService();
+const reports = new ReportService(metrics);
 const server = serve({
   fetch: createApp({
     metrics,
@@ -60,6 +62,7 @@ const server = serve({
     ...(extraction ? { extraction } : {}),
     compliance,
     reviews,
+    reports,
   }).fetch,
   port: environment.PORT,
 });
