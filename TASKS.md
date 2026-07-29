@@ -37,9 +37,9 @@ Complete tasks in order unless a dependency is explicitly removed. Each day has 
 - [x] 25. Design redaction, deletion, rate limits, observability, cost metrics, and accessibility; write acceptance criteria, contracts, risks, and the smallest vertical slice.
 - [x] 26. Implement redaction, deletion, rate limits, observability, cost metrics, and accessibility; keep frontend, API, domain logic, workers, and persistence in their declared boundaries.
 - [x] 27. Verify redaction, deletion, rate limits, observability, cost metrics, and accessibility with tests, failure cases, telemetry, documentation, and a reviewable demo.
-- [ ] 28. Design golden-dataset tests, hallucination review, E2E flow, and deployment docs; write acceptance criteria, contracts, risks, and the smallest vertical slice.
-- [ ] 29. Implement golden-dataset tests, hallucination review, E2E flow, and deployment docs; keep frontend, API, domain logic, workers, and persistence in their declared boundaries.
-- [ ] 30. Verify golden-dataset tests, hallucination review, E2E flow, and deployment docs with tests, failure cases, telemetry, documentation, and a reviewable demo.
+- [x] 28. Design golden-dataset tests, hallucination review, E2E flow, and deployment docs; write acceptance criteria, contracts, risks, and the smallest vertical slice.
+- [x] 29. Implement golden-dataset tests, hallucination review, E2E flow, and deployment docs; keep frontend, API, domain logic, workers, and persistence in their declared boundaries.
+- [x] 30. Verify golden-dataset tests, hallucination review, E2E flow, and deployment docs with tests, failure cases, telemetry, documentation, and a reviewable demo.
 
 ## Task completion checklist
 

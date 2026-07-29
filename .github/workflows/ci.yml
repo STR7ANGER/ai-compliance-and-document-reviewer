@@ -17,6 +17,7 @@ jobs:
       - run: npm run check
       - run: npm run build
       - run: docker compose config --quiet
+      - run: docker build -t citewise-review:ci .
       - run: npm audit --audit-level=high
   migrations:
     runs-on: ubuntu-latest

@@ -1,0 +1,23 @@
+[
+  {
+    "query": "breach notification deadline",
+    "relevantChunkIds": ["breach-24h"],
+    "rankedChunkIds": ["breach-24h", "audit-rights", "termination"],
+    "expectedPages": [7],
+    "citedPages": [7]
+  },
+  {
+    "query": "annual audit rights",
+    "relevantChunkIds": ["audit-rights"],
+    "rankedChunkIds": ["security-controls", "audit-rights", "termination"],
+    "expectedPages": [11],
+    "citedPages": [11]
+  },
+  {
+    "query": "data deletion after termination",
+    "relevantChunkIds": ["termination"],
+    "rankedChunkIds": ["termination", "breach-24h"],
+    "expectedPages": [15],
+    "citedPages": [15]
+  }
+]

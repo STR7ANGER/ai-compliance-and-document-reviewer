@@ -14,6 +14,26 @@ export interface StructuredGenerator {
     outputTokens: number;
   }>;
 }
+export const reviewGrounding = (
+  obligations: Array<{ evidenceIndex: number }>,
+  evidenceCount: number,
+) => {
+  const unsupported = obligations
+    .map((item, index) => ({
+      outputIndex: index,
+      evidenceIndex: item.evidenceIndex,
+    }))
+    .filter(
+      (item) => item.evidenceIndex < 0 || item.evidenceIndex >= evidenceCount,
+    );
+  return {
+    unsupported,
+    groundingScore:
+      obligations.length === 0
+        ? 1
+        : 1 - unsupported.length / obligations.length,
+  };
+};
 export class GeminiGenerator implements StructuredGenerator {
   readonly model = "gemini-3.6-flash";
   constructor(private readonly apiKey: string) {}
@@ -120,7 +140,8 @@ export class ExtractionService {
       `${promptVersion.template}\nEvidence:\n${JSON.stringify(evidence)}`,
     );
     const parsed = extractedObligations.parse(generation.output);
-    if (parsed.obligations.some((item) => !evidence[item.evidenceIndex]))
+    const grounding = reviewGrounding(parsed.obligations, evidence.length);
+    if (grounding.unsupported.length > 0)
       throw new DomainError(
         "UNGROUNDED_OUTPUT",
         422,
@@ -139,7 +160,7 @@ export class ExtractionService {
         promptVersionId: promptVersion.id,
         model: this.generator.model,
         output,
-        groundingScore: 1,
+        groundingScore: grounding.groundingScore,
       },
     });
     this.metrics.increment("extraction_runs_total", {
